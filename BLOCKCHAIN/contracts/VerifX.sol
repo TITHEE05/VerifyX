@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-contract CertChain {
+contract VerifyX {
     struct Certificate {
         string ipfsHash;
         address issuer;

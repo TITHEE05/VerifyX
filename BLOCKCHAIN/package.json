@@ -10,9 +10,14 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.2",
     "@types/node": "^22.19.13",
-    "hardhat": "^3.1.10",
+    "ethers": "^6.16.0",
+    "hardhat": "^2.22.0",
+    "ts-node": "^10.9.2",
     "typescript": "~5.8.0"
   },
-  "type": "module"
+  "dependencies": {
+    "dotenv": "^17.3.1"
+  }
 }
