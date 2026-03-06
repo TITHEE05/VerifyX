@@ -22,10 +22,6 @@ const certificateSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  issuerEmail: {
-    type: String,
-    required: true,
-  },
   issuedAt: {
     type: Date,
     default: Date.now,
@@ -47,6 +43,10 @@ const certificateSchema = new mongoose.Schema({
     default: null,
   },
   qrCodeUrl: {
+    type: String,
+    default: null,
+  },
+  certificateImageUrl: {
     type: String,
     default: null,
   },
