@@ -29,7 +29,7 @@ function getSigner() {
 /**
  * Generate a professional certificate image as a PNG Buffer
  */
-async function generateCertificateImage({ recipientName, courseName, issuerName, certId, issuedAt, qrCodeDataUrl }) {
+async function generateCertificateImage({ recipientName, courseName, issuerName, certId, issuedAt, qrCodeDataUrl, description, grade, eventName, expiryDate }) {
   const width = 1200;
   const height = 850;
   const canvas = createCanvas(width, height);
@@ -174,7 +174,7 @@ async function generateCertificateImage({ recipientName, courseName, issuerName,
 // ─── POST /cert/issue ────────────────────────────────────────────────────────
 router.post('/issue', async (req, res) => {
   try {
-    const { recipientName, recipientEmail, courseName, issuerName } = req.body;
+    const { recipientName, recipientEmail, courseName, issuerName, description, grade, eventName, expiryDate } = req.body;
 
     if (!recipientName || !recipientEmail || !courseName || !issuerName) {
       return res.status(400).json({ error: 'recipientName, recipientEmail, courseName and issuerName are required' });
@@ -190,6 +190,10 @@ router.post('/issue', async (req, res) => {
       recipientEmail,
       courseName,
       issuerName,
+      description: description || '',
+      grade: grade || '',
+      eventName: eventName || '',
+      expiryDate: expiryDate || null,
       issuedAt,
       platform: 'VerifyX',
     };
@@ -242,6 +246,10 @@ router.post('/issue', async (req, res) => {
         certId,
         issuedAt,
         qrCodeDataUrl: qrCodeUrl,
+        description: description || '',
+        grade: grade || '',
+        eventName: eventName || '',
+        expiryDate: expiryDate || null,
       });
       console.log('✅ Certificate image generated');
     } catch (imgErr) {
@@ -255,6 +263,10 @@ router.post('/issue', async (req, res) => {
       recipientEmail,
       courseName,
       issuerName,
+      description: description || '',
+      grade: grade || '',
+      eventName: eventName || '',
+      expiryDate: expiryDate || null,
       ipfsHash,
       ipfsUrl,
       txHash,

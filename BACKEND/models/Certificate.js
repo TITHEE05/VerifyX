@@ -22,6 +22,22 @@ const certificateSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  description: {
+    type: String,
+    default: '',
+  },
+  grade: {
+    type: String,
+    default: '',
+  },
+  eventName: {
+    type: String,
+    default: '',
+  },
+  expiryDate: {
+    type: Date,
+    default: null,
+  },
   issuedAt: {
     type: Date,
     default: Date.now,
