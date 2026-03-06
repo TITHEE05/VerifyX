@@ -8,7 +8,7 @@ contract VerifyX {
         uint256 issuedAt;
         bool isValid;
         string recipientName;
-        string eventName;
+        string courseName;
         string issuerName;
     }
 
@@ -19,22 +19,23 @@ contract VerifyX {
 
     function issueCertificate(
         string memory certId,
-        string memory ipfsHash,
-        string memory recipientName,
-        string memory eventName,
-        string memory issuerName
+        string memory _recipientName,
+        string memory _courseName,
+        string memory _issuerName,
+        string memory _ipfsHash
     ) public {
-        require(bytes(certificates[certId].recipientName).length == 0, "Cert ID already exists");
-        certificates[certId] = Certificate(
-            ipfsHash,
-            msg.sender,
-            block.timestamp,
-            true,
-            recipientName,
-            eventName,
-            issuerName
-        );
-        emit CertificateIssued(certId, msg.sender, recipientName);
+        require(bytes(certificates[certId].ipfsHash).length == 0, "Cert ID already exists");
+
+        Certificate storage newCert = certificates[certId];
+        newCert.ipfsHash = _ipfsHash;
+        newCert.issuer = msg.sender;
+        newCert.issuedAt = block.timestamp;
+        newCert.isValid = true;
+        newCert.recipientName = _recipientName;
+        newCert.courseName = _courseName;
+        newCert.issuerName = _issuerName;
+
+        emit CertificateIssued(certId, msg.sender, _recipientName);
     }
 
     function revokeCertificate(string memory certId) public {
