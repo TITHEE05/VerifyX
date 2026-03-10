@@ -362,7 +362,7 @@ export default function Home() {
 
                 <div style={{ marginBottom: 20 }}>
                   <div style={{ fontSize: 11, color: "rgba(232,234,240,0.3)", fontFamily: "'DM Mono', monospace", marginBottom: 4 }}>Recipient</div>
-                  <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: "-0.02em" }}>Resham Lall</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: "-0.02em" }}>John Doe</div>
                 </div>
 
                 <div style={{ marginBottom: 20 }}>
