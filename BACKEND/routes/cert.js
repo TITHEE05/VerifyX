@@ -13,6 +13,8 @@ const contractABI = require('C:/Users/Hp/OneDrive/Desktop/VerifyX/BLOCKCHAIN/art
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 
+const authMiddleware = require("../middleware/auth");
+
 function getContract(signerOrProvider) {
   return new ethers.Contract(CONTRACT_ADDRESS, contractABI, signerOrProvider);
 }
@@ -172,7 +174,7 @@ async function generateCertificateImage({ recipientName, courseName, issuerName,
 }
 
 // ─── POST /cert/issue ────────────────────────────────────────────────────────
-router.post('/issue', async (req, res) => {
+router.post('/issue', authMiddleware, async (req, res) => {
   try {
     const { recipientName, recipientEmail, courseName, issuerName, description, grade, eventName, expiryDate } = req.body;
 
@@ -332,7 +334,7 @@ router.get('/verify/:certId', async (req, res) => {
 });
 
 // ─── GET /cert/all ────────────────────────────────────────────────────────────
-router.get('/all', async (req, res) => {
+router.get('/all', authMiddleware, async (req, res) => {
   try {
     const certificates = await Certificate.find().sort({ createdAt: -1 });
     res.json({ certificates });
@@ -355,7 +357,7 @@ router.get('/:certId', async (req, res) => {
 });
 
 // ─── POST /cert/revoke/:certId ────────────────────────────────────────────────
-router.post('/revoke/:certId', async (req, res) => {
+router.post('/revoke/:certId', authMiddleware, async (req, res) => {
   try {
     const { certId } = req.params;
     const { reason } = req.body;
