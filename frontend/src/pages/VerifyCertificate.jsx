@@ -260,7 +260,19 @@ export default function VerifyCertificate() {
                 <div style={styles.certRecipient}>{result.cert.recipientName}</div>
                 <div style={styles.certRecipientLabel}>has successfully completed</div>
                 <div style={styles.certCourse}>{result.cert.courseName}</div>
-                {result.cert.grade && <div style={styles.certGrade}>Grade: {result.cert.grade}</div>}
+                {result.cert.expiryDate && (
+                    <div style={{
+                        fontFamily: "'DM Mono', monospace",
+                        fontSize: 12,
+                        color: new Date() > new Date(result.cert.expiryDate) ? "#ff6b6b" : "rgba(232,234,240,0.5)",
+                        marginBottom: 16,
+                      }}>
+                      {new Date() > new Date(result.cert.expiryDate)
+                          ? `⏰ Expired on ${new Date(result.cert.expiryDate).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}`
+                          : `Valid until ${new Date(result.cert.expiryDate).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}`
+                      }
+                    </div>
+                )}
                 <div style={styles.certFooter}>
                   <div>
                     <div style={styles.certFooterVal}>{result.cert.issuerName}</div>

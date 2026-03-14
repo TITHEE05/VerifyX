@@ -337,6 +337,18 @@ router.get('/verify/:certId', async (req, res) => {
 router.get('/all', authMiddleware, async (req, res) => {
   try {
     const certificates = await Certificate.find().sort({ createdAt: -1 });
+
+    // Auto-expire check for all certificates
+    for (const cert of certificates) {
+      if (cert.expiryDate && new Date() > new Date(cert.expiryDate) && !cert.isRevoked) {
+        cert.isRevoked = true;
+        cert.revokeReason = "Certificate expired automatically";
+        cert.revokedAt = new Date();
+        await cert.save();
+        console.log(`⏰ Auto-expired: ${cert.certId}`);
+      }
+    }
+
     res.json({ certificates });
   } catch (err) {
     console.error('❌ Get all error:', err);
@@ -349,6 +361,16 @@ router.get('/:certId', async (req, res) => {
   try {
     const cert = await Certificate.findOne({ certId: req.params.certId });
     if (!cert) return res.status(404).json({ error: 'Certificate not found' });
+
+    // ── Auto expiry check ──
+    if (cert.expiryDate && new Date() > new Date(cert.expiryDate) && !cert.isRevoked) {
+      cert.isRevoked = true;
+      cert.revokeReason = "Certificate expired automatically";
+      cert.revokedAt = new Date();
+      await cert.save();
+      console.log(`⏰ Certificate ${cert.certId} auto-expired`);
+    }
+
     res.json(cert);
   } catch (err) {
     console.error('❌ Get cert error:', err);

@@ -17,6 +17,7 @@ export default function IssueCertificate() {
     courseName: "",
     issuerName: org.orgName || "",
     issuerEmail: org.email || "",
+    expiryDate: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -55,6 +56,7 @@ export default function IssueCertificate() {
       setLoading(false);
     }
   };
+  
 
   const handleIssueAnother = () => {
     setSuccess(null);
@@ -65,6 +67,7 @@ export default function IssueCertificate() {
       courseName: "",
       issuerName: org.orgName || "",
       issuerEmail: org.email || "",
+      expiryDate: "",
     });
   };
 
@@ -195,7 +198,36 @@ export default function IssueCertificate() {
                 </div>
               </div>
 
+              <div style={styles.fieldRow}>
+                
+              <div style={styles.fieldGroup}>
+                    <label style={styles.label}>
+                      Expiry Date 
+                      <span style={{ ...styles.req, color: "rgba(232,234,240,0.3)", marginLeft: 4 }}>
+                        (optional)
+                      </span>
+                    </label>
+                    <input
+                      style={styles.input}
+                      className="vx-input"
+                      type="date"
+                      name="expiryDate"
+                      value={form.expiryDate}
+                      onChange={handleChange}
+                    />
+                    <div style={{
+                      fontFamily: "'DM Mono', monospace",
+                      fontSize: 11,
+                      color: "rgba(232,234,240,0.2)",
+                      marginTop: 4,
+                    }}>
+                      Leave empty for certificates that never expire
+                    </div>
+                  </div>
+              </div>
+
               <div style={styles.divider} />
+
 
               {/* Issuer section */}
               <div style={styles.section}>

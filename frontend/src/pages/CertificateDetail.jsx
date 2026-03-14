@@ -182,6 +182,10 @@ export default function CertificateDetail() {
                 ["Contract Address", cert.blockchainAddress || "—"],
                 ["Network", "Polygon Amoy (Local)"],
                 ["Anchored", cert.txHash ? "Yes ✓" : "Pending"],
+                ["Expiry Date", cert.expiryDate
+                  ? new Date(cert.expiryDate).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
+                  : "No expiry"
+                ],
               ].map(([label, value]) => (
                 <div key={label} style={styles.infoRow}>
                   <div style={styles.infoLabel}>{label}</div>
@@ -232,6 +236,10 @@ export default function CertificateDetail() {
                 {[
                   ["Revoked On", formatDate(cert.revokedAt)],
                   ["Reason", cert.revokeReason || "No reason provided"],
+                  ...(cert.revokeReason === "Certificate expired automatically"
+                    ? [["Type", "⏰ Auto-expired"]]
+                    : [["Type", "🚫 Manually revoked"]]
+                  ),
                 ].map(([label, value]) => (
                   <div key={label} style={styles.infoRow}>
                     <div style={styles.infoLabel}>{label}</div>
