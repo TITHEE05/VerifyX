@@ -73,8 +73,21 @@ export default function CertificateDetail() {
         </div>
         <div style={styles.topRight}>
           <span style={styles.topLink} onClick={() => navigate("/verify")}>
-            ← Verify another
+            Verify another
           </span>
+          {(() => {
+            const token = localStorage.getItem("vx_token");
+            if (!token) return null;
+            try {
+              const payload = JSON.parse(atob(token.split(".")[1]));
+              if (payload.exp * 1000 > Date.now()) return (
+                <span style={styles.topLink} onClick={() => navigate("/dashboard")}>
+                  ← Dashboard
+                </span>
+              );
+            } catch {}
+            return null;
+          })()}
         </div>
       </div>
 
@@ -239,7 +252,7 @@ export default function CertificateDetail() {
                   ...(cert.revokeReason === "Certificate expired automatically"
                     ? [["Type", "⏰ Auto-expired"]]
                     : [["Type", "🚫 Manually revoked"]]
-                  ),
+                 ),
                 ].map(([label, value]) => (
                   <div key={label} style={styles.infoRow}>
                     <div style={styles.infoLabel}>{label}</div>

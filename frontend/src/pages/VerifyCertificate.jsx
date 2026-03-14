@@ -109,9 +109,29 @@ export default function VerifyCertificate() {
           <span style={styles.logoText}>VerifyX</span>
         </div>
         <div style={styles.topRight}>
-          <span style={styles.topLink} onClick={() => navigate("/")}>Home</span>
-          <span style={styles.topLink} onClick={() => navigate("/login")}>Issuer Login →</span>
-        </div>
+            <span style={styles.topLink} onClick={() => navigate("/")}>Home</span>
+            {(() => {
+              const token = localStorage.getItem("vx_token");
+              if (!token) return (
+                <span style={styles.topLink} onClick={() => navigate("/login")}>
+                  Issuer Login →
+                </span>
+              );
+              try {
+                const payload = JSON.parse(atob(token.split(".")[1]));
+                if (payload.exp * 1000 > Date.now()) return (
+                  <span style={styles.topLink} onClick={() => navigate("/dashboard")}>
+                    ← Dashboard
+                  </span>
+                );
+              } catch {}
+              return (
+                <span style={styles.topLink} onClick={() => navigate("/login")}>
+                  Issuer Login →
+                </span>
+              );
+            })()}
+</div>
       </div>
 
       {/* Hero */}
@@ -243,6 +263,21 @@ export default function VerifyCertificate() {
               </div>
             </div>
           </div>
+          
+          {result.cert.source === "blockchain" && (
+              <div style={{
+                background: "rgba(255,165,0,0.06)",
+                border: "1px solid rgba(255,165,0,0.2)",
+                padding: "12px 20px",
+                marginBottom: 16,
+                fontFamily: "'DM Mono', monospace",
+                fontSize: 12,
+                color: "rgba(255,165,0,0.8)",
+              }}>
+                ⚠ Limited data — retrieved directly from blockchain. Some details may not be available.
+              </div>
+            )}
+
 
           <div style={styles.detailsGrid}>
             <div style={styles.detailsCard}>

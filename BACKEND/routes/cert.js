@@ -360,15 +360,43 @@ router.get('/all', authMiddleware, async (req, res) => {
 router.get('/:certId', async (req, res) => {
   try {
     const cert = await Certificate.findOne({ certId: req.params.certId });
-    if (!cert) return res.status(404).json({ error: 'Certificate not found' });
+    
+    // If not in MongoDB — try blockchain
+    if (!cert) {
+      try {
+        const provider = getProvider();
+        const contract = getContract(provider);
+        const result = await contract.verifyCertificate(req.params.certId);
+        
+        // If found on blockchain return basic data
+        if (result && result.recipientName) {
+          return res.json({
+            certId: req.params.certId,
+            recipientName: result.recipientName,
+            courseName: result.courseName,
+            issuerName: result.issuerName,
+            isRevoked: !result.isValid,
+            txHash: null,
+            ipfsHash: result.ipfsHash,
+            ipfsUrl: result.ipfsHash 
+              ? `https://gateway.pinata.cloud/ipfs/${result.ipfsHash}` 
+              : null,
+            source: "blockchain" // flag that this came from blockchain
+          });
+        }
+      } catch (bcErr) {
+        console.warn('Blockchain fallback failed:', bcErr.message);
+      }
+      
+      return res.status(404).json({ error: 'Certificate not found' });
+    }
 
-    // ── Auto expiry check ──
+    // Auto expiry check
     if (cert.expiryDate && new Date() > new Date(cert.expiryDate) && !cert.isRevoked) {
       cert.isRevoked = true;
       cert.revokeReason = "Certificate expired automatically";
       cert.revokedAt = new Date();
       await cert.save();
-      console.log(`⏰ Certificate ${cert.certId} auto-expired`);
     }
 
     res.json(cert);
